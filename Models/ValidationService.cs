@@ -924,13 +924,14 @@ namespace CampusLogicEvents.Web.Models
                         {
                             var record = powerFaidsList[i];
 
-                            if (!string.IsNullOrEmpty(record.Event) && !string.IsNullOrEmpty(record.TransactionCategory))
+                            if (!string.IsNullOrEmpty(record.Event))
                             {
                                 // Check for uniqueness of combination of Event Notification ID/Transaction Category
                                 for (int j = 0; j < powerFaidsList.Count; j++)
                                 {
                                     if (j != i && powerFaidsList[j].Event == record.Event && 
-                                        powerFaidsList[j].TransactionCategory == record.TransactionCategory)
+                                        // if there is no tran category, true, otherwise compare
+                                        (!string.IsNullOrEmpty(record.TransactionCategory) ? powerFaidsList[j].TransactionCategory == record.TransactionCategory : true))
                                     {
                                         throw new Exception();
                                     }

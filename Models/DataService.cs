@@ -299,9 +299,10 @@ namespace CampusLogicEvents.Web.Models
                 var eventSettings = campusLogicConfigSection.PowerFaidsSettings.PowerFaidsSettingCollectionConfig.GetPowerFaidsSettingList();
 
                 var eventSetting = eventSettings
-                    .FirstOrDefault(e => !eventData.PropertyValues[EventPropertyConstants.SvTransactionCategoryId].IsNullOrEmpty() &&
-                                         eventData.PropertyValues[EventPropertyConstants.SvTransactionCategoryId].Value<string>() == e.TransactionCategory &&
-                                         e.Event == eventData.PropertyValues[EventPropertyConstants.EventNotificationId].Value<string>());
+                    .FirstOrDefault(e => (eventData.PropertyValues[EventPropertyConstants.SvTransactionCategoryId]?.Value<string>() == null 
+                            ? string.Empty 
+                            : eventData.PropertyValues[EventPropertyConstants.SvTransactionCategoryId]?.Value<string>()) == e.TransactionCategory
+                        && e.Event == eventData.PropertyValues[EventPropertyConstants.EventNotificationId].Value<string>());
 
                 if (eventSetting != null)
                 {

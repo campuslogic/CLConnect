@@ -686,7 +686,7 @@
                                 awardLetterUploadEnabled: setupservice.configurationModel.campusLogicSection
                                     .awardLetterUploadSettings.awardLetterUploadEnabled
                             },
-                            function() {
+                            function () {
                                 service.pageValidations.apiCredentialsTested = true;
                                 service.pageValidations.apiCredentialsValid = true;
                                 // if credentials are valid, update EventProperties from PM
@@ -696,15 +696,15 @@
                                         password: setupservice.configurationModel.appSettingsSection.apiPassword,
                                         environment: setupservice.configurationModel.appSettingsSection.environment
                                     },
-                                    function() {
+                                    function () {
                                         eventpropertyservice.getEventPropertyDisplayNames.query({},
-                                            function(data) {
+                                            function (data) {
                                                 setupservice.configurationModel.campusLogicSection
                                                     .eventPropertyValueAvailableProperties = data;
                                             });
                                     });
                             },
-                            function() {
+                            function () {
                                 service.pageValidations.apiCredentialsTested = true;
                                 service.pageValidations.apiCredentialsValid = false;
                             });
@@ -760,12 +760,12 @@
                 }
             }
             catch
-                (exception) {
+            (exception) {
                 toastr.error("An error occured while attempting to connect to SMTP.");
             }
         }
 
-        function testBulkActionSettings() {     
+        function testBulkActionSettings() {
             service.pageValidations.bulkActionSettingsValid = true;
             var settings = setupservice.configurationModel.campusLogicSection.bulkActionSettings;
             service.pageValidations.bulkActionSettingsValid = settings && settings.bulkActionEnabled && !!(settings.bulkActionArchivePath && settings.bulkActionUploadPath && settings.frequency && settings.notificationEmail);
@@ -793,7 +793,7 @@
                         }
                         if (service.testFolderPath(settings.documentStorageFilePath)) {
 
-                            service.testReadWritePermissions.get({ directoryPath: settings.documentStorageFilePath }, function (response) {}, function (error) {
+                            service.testReadWritePermissions.get({ directoryPath: settings.documentStorageFilePath }, function (response) { }, function (error) {
                                 service.pageValidations.documentSettingsValid = false;
                             });
                         } else {
@@ -828,7 +828,7 @@
                     }
                     if (service.testFolderPath(settings.fileStorePath)) {
 
-                        service.testReadWritePermissions.get({ directoryPath: settings.fileStorePath }, function (response) {}, function (error) {
+                        service.testReadWritePermissions.get({ directoryPath: settings.fileStorePath }, function (response) { }, function (error) {
                             service.pageValidations.fileStoreSettingsValid = false;
                         });
                     } else {
@@ -1015,31 +1015,26 @@
 
                 if (powerFaidsList && powerFaidsList.length > 0) {
                     for (var i = 0; i < powerFaidsList.length; i++) {
-                        if (powerFaidsList[i].event && powerFaidsList[i].transactionCategory) {
-                            // Check for uniqueness of event/transaction category combinations
-                            for (var j = 0; j < powerFaidsList.length; j++) {
-                                if (j !== i && powerFaidsList[j].event === powerFaidsList[i].event && powerFaidsList[j].transactionCategory === powerFaidsList[i].transactionCategory) {
-                                    service.pageValidations.powerFaidsSettingsValid = false;
-                                }
-                            }
-
-                            // Ensure the event is mapped
-                            if (!setupservice.configurationModel.campusLogicSection.eventNotifications.find(function (event) {
-                                return event.eventNotificationId == powerFaidsList[i].event;
-                            }))
-                            {
+                        // Check for uniqueness of event/transaction category combinations
+                        for (var j = 0; j < powerFaidsList.length; j++) {
+                            if (j !== i && powerFaidsList[j].event === powerFaidsList[i].event && powerFaidsList[j].transactionCategory === powerFaidsList[i].transactionCategory) {
                                 service.pageValidations.powerFaidsSettingsValid = false;
                             }
+                        }
 
-                            if (powerFaidsList[i].outcome) {
-                                if (powerFaidsList[i].outcome === "documents" && (!powerFaidsList[i].shortName || !powerFaidsList[i].requiredFor || !powerFaidsList[i].status || !powerFaidsList[i].documentLock)) {
-                                    service.pageValidations.powerFaidsSettingsValid = false;
-                                } else if (powerFaidsList[i].outcome === "verification" && (!powerFaidsList[i].verificationOutcome || !powerFaidsList[i].verificationOutcomeLock)) {
-                                    service.pageValidations.powerFaidsSettingsValid = false;
-                                } else if (powerFaidsList[i].outcome === "both" && (!powerFaidsList[i].shortName || !powerFaidsList[i].requiredFor || !powerFaidsList[i].status || !powerFaidsList[i].documentLock || !powerFaidsList[i].verificationOutcome || !powerFaidsList[i].verificationOutcomeLock)) {
-                                    service.pageValidations.powerFaidsSettingsValid = false;
-                                }
-                            } else {
+                        // Ensure the event is mapped
+                        if (!setupservice.configurationModel.campusLogicSection.eventNotifications.find(function (event) {
+                            return event.eventNotificationId == powerFaidsList[i].event;
+                        })) {
+                            service.pageValidations.powerFaidsSettingsValid = false;
+                        }
+
+                        if (powerFaidsList[i].outcome) {
+                            if (powerFaidsList[i].outcome === "documents" && (!powerFaidsList[i].shortName || !powerFaidsList[i].requiredFor || !powerFaidsList[i].status || !powerFaidsList[i].documentLock)) {
+                                service.pageValidations.powerFaidsSettingsValid = false;
+                            } else if (powerFaidsList[i].outcome === "verification" && (!powerFaidsList[i].verificationOutcome || !powerFaidsList[i].verificationOutcomeLock)) {
+                                service.pageValidations.powerFaidsSettingsValid = false;
+                            } else if (powerFaidsList[i].outcome === "both" && (!powerFaidsList[i].shortName || !powerFaidsList[i].requiredFor || !powerFaidsList[i].status || !powerFaidsList[i].documentLock || !powerFaidsList[i].verificationOutcome || !powerFaidsList[i].verificationOutcomeLock)) {
                                 service.pageValidations.powerFaidsSettingsValid = false;
                             }
                         } else {
@@ -1051,7 +1046,7 @@
                 }
             } else {
                 service.pageValidations.powerFaidsSettingsValid = false;
-            }            
+            }
         }
 
         function checkForEmptyOrNullString(obj) {
