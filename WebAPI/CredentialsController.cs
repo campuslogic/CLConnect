@@ -23,44 +23,48 @@ namespace CampusLogicEvents.Web.WebAPI
         {
             try
             {
-                string stsURL = string.Empty;
+                string stsURL;
                 List<string> apiURLs = new List<string>();
 
                 switch (environment)
                 {
+                    case EnvironmentConstants.QA:
+                    {
+                        apiURLs.Add(ApiUrlConstants.SV_API_URL_QA);
+                        apiURLs.Add(ApiUrlConstants.PM_API_URL_QA);
+                        if (awardLetterUploadEnabled)
+                        {
+                            apiURLs.Add(ApiUrlConstants.AL_API_URL_QA);
+                        }
+                        stsURL = ApiUrlConstants.STS_URL_QA;
+                        break;
+                    }
                     case EnvironmentConstants.SANDBOX:
+                    {
+                        apiURLs.Add(ApiUrlConstants.SV_API_URL_SANDBOX);
+                        apiURLs.Add(ApiUrlConstants.PM_API_URL_SANDBOX);
+                        if (awardLetterUploadEnabled)
                         {
-                            apiURLs.Add(ApiUrlConstants.SV_API_URL_SANDBOX);
-                            apiURLs.Add(ApiUrlConstants.PM_API_URL_SANDBOX);
-                            if (awardLetterUploadEnabled)
-                            {
-                                apiURLs.Add(ApiUrlConstants.AL_API_URL_SANDBOX);
-                            }
-                            stsURL = ApiUrlConstants.STS_URL_SANDBOX;
-                            break;
+                            apiURLs.Add(ApiUrlConstants.AL_API_URL_SANDBOX);
                         }
+                        stsURL = ApiUrlConstants.STS_URL_SANDBOX;
+                        break;
+                    }
                     case EnvironmentConstants.PRODUCTION:
+                    {
+                        apiURLs.Add(ApiUrlConstants.SV_API_URL_PRODUCTION);
+                        apiURLs.Add(ApiUrlConstants.PM_API_URL_PRODUCTION);
+                        if (awardLetterUploadEnabled)
                         {
-                            apiURLs.Add(ApiUrlConstants.SV_API_URL_PRODUCTION);
-                            apiURLs.Add(ApiUrlConstants.PM_API_URL_PRODUCTION);
-                            if (awardLetterUploadEnabled)
-                            {
-                                apiURLs.Add(ApiUrlConstants.AL_API_URL_PRODUCTION);
-                            }
-                            stsURL = ApiUrlConstants.STS_URL_PRODUCTION;
-                            break;
+                            apiURLs.Add(ApiUrlConstants.AL_API_URL_PRODUCTION);
                         }
+                        stsURL = ApiUrlConstants.STS_URL_PRODUCTION;
+                        break;
+                    }
                     default:
-                        {
-                            apiURLs.Add(ApiUrlConstants.SV_API_URL_SANDBOX);
-                            apiURLs.Add(ApiUrlConstants.PM_API_URL_SANDBOX);
-                            if (awardLetterUploadEnabled)
-                            {
-                                apiURLs.Add(ApiUrlConstants.AL_API_URL_SANDBOX);
-                            }
-                            stsURL = ApiUrlConstants.STS_URL_SANDBOX;
-                            break;
-                        }
+                    {
+                        throw new Exception($"Invalid Environment {environment}");
+                    }
                 }
                 CredentialsManager credentialsManager = new CredentialsManager();
                 HttpResponseMessage response = credentialsManager.GetAuthorizationToken(username, password, apiURLs, stsURL);

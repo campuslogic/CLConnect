@@ -410,41 +410,47 @@ namespace CampusLogicEvents.Web.Models
             string stsUrl;
             List<string> apiURLs = new List<string>();
 
-            switch (applicationAppSettingsSection["environment"])
+            string environment = applicationAppSettingsSection["environment"];
+
+            switch (environment)
             {
+                case EnvironmentConstants.QA:
+                {
+                    apiURLs.Add(ApiUrlConstants.SV_API_URL_QA);
+                    apiURLs.Add(ApiUrlConstants.PM_API_URL_QA);
+                    if (awardLetterUploadEnabled)
+                    {
+                        apiURLs.Add(ApiUrlConstants.AL_API_URL_QA);
+                    }
+                    stsUrl = ApiUrlConstants.STS_URL_QA;
+                    break;
+                }
                 case EnvironmentConstants.SANDBOX:
+                {
+                    apiURLs.Add(ApiUrlConstants.SV_API_URL_SANDBOX);
+                    apiURLs.Add(ApiUrlConstants.PM_API_URL_SANDBOX);
+                    if (awardLetterUploadEnabled)
                     {
-                        apiURLs.Add(ApiUrlConstants.SV_API_URL_SANDBOX);
-                        apiURLs.Add(ApiUrlConstants.PM_API_URL_SANDBOX);
-                        if (awardLetterUploadEnabled)
-                        {
-                            apiURLs.Add(ApiUrlConstants.AL_API_URL_SANDBOX);
-                        }
-                        stsUrl = ApiUrlConstants.STS_URL_SANDBOX;
-                        break;
+                        apiURLs.Add(ApiUrlConstants.AL_API_URL_SANDBOX);
                     }
+                    stsUrl = ApiUrlConstants.STS_URL_SANDBOX;
+                    break;
+                }
                 case EnvironmentConstants.PRODUCTION:
+                {
+                    apiURLs.Add(ApiUrlConstants.SV_API_URL_PRODUCTION);
+                    apiURLs.Add(ApiUrlConstants.PM_API_URL_PRODUCTION);
+                    if (awardLetterUploadEnabled)
                     {
-                        apiURLs.Add(ApiUrlConstants.SV_API_URL_PRODUCTION);
-                        apiURLs.Add(ApiUrlConstants.PM_API_URL_PRODUCTION);
-                        if (awardLetterUploadEnabled)
-                        {
-                            apiURLs.Add(ApiUrlConstants.AL_API_URL_PRODUCTION);
-                        }
-                        stsUrl = ApiUrlConstants.STS_URL_PRODUCTION;
-                        break;
+                        apiURLs.Add(ApiUrlConstants.AL_API_URL_PRODUCTION);
                     }
+                    stsUrl = ApiUrlConstants.STS_URL_PRODUCTION;
+                    break;
+                }
                 default:
-                    {
-                        apiURLs.Add(ApiUrlConstants.SV_API_URL_SANDBOX);
-                        apiURLs.Add(ApiUrlConstants.PM_API_URL_SANDBOX);
-                        if (awardLetterUploadEnabled)
-                        {
-                            apiURLs.Add(ApiUrlConstants.AL_API_URL_SANDBOX);
-                        }
-                        stsUrl = ApiUrlConstants.STS_URL_SANDBOX;
-                        break;
-                    }
+                {
+                    throw new Exception($"Invalid Environment {environment}");
+                }
             }
             CredentialsManager credentialsManager = new CredentialsManager();
 
