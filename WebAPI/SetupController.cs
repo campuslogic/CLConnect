@@ -509,34 +509,25 @@ namespace CampusLogicEvents.Web.WebAPI
                 appSettings.Settings["ClientValidationEnabled"].Value = "true";
                 appSettings.Settings["UnobtrusiveJavaScriptEnabled"].Value = "true";
 
-                string environment = appSettings.Settings["Environment"].Value.ToLowerInvariant();
-
-                switch (environment)
+                if (appSettings.Settings["Environment"].Value == EnvironmentConstants.QA)
                 {
-                    case EnvironmentConstants.QA:
-                        appSettings.Settings["StsUrl"].Value = ApiUrlConstants.STS_URL_QA;
-                        appSettings.Settings["SvWebApiUrl"].Value = ApiUrlConstants.SV_API_URL_QA;
-                        appSettings.Settings["AwardLetterWebApiUrl"].Value = ApiUrlConstants.AL_API_URL_QA;
-                        appSettings.Settings["PmWebApiUrl"].Value = ApiUrlConstants.PM_API_URL_QA;
-                        appSettings.Settings["SuWebApiUrl"].Value = ApiUrlConstants.SU_API_URL_QA;
-                        break;
-                    case EnvironmentConstants.SANDBOX:
-                        appSettings.Settings["StsUrl"].Value = ApiUrlConstants.STS_URL_SANDBOX;
-                        appSettings.Settings["SvWebApiUrl"].Value = ApiUrlConstants.SV_API_URL_SANDBOX;
-                        appSettings.Settings["AwardLetterWebApiUrl"].Value = ApiUrlConstants.AL_API_URL_SANDBOX;
-                        appSettings.Settings["PmWebApiUrl"].Value = ApiUrlConstants.PM_API_URL_SANDBOX;
-                        appSettings.Settings["SuWebApiUrl"].Value = ApiUrlConstants.SU_API_URL_SANDBOX;
-                        break;
-                    case EnvironmentConstants.PRODUCTION:
-                        appSettings.Settings["StsUrl"].Value = ApiUrlConstants.STS_URL_PRODUCTION;
-                        appSettings.Settings["SvWebApiUrl"].Value = ApiUrlConstants.SV_API_URL_PRODUCTION;
-                        appSettings.Settings["AwardLetterWebApiUrl"].Value = ApiUrlConstants.AL_API_URL_PRODUCTION;
-                        appSettings.Settings["PmWebApiUrl"].Value = ApiUrlConstants.PM_API_URL_PRODUCTION;
-                        appSettings.Settings["SuWebApiUrl"].Value = ApiUrlConstants.SU_API_URL_PRODUCTION;
-                        break;
-                    default:
-                        throw new Exception($"Invalid Environment {environment}");
-
+                    // do nothing for QA
+                }
+                else if (appSettings.Settings["Environment"].Value == EnvironmentConstants.SANDBOX)
+                {
+                    appSettings.Settings["StsUrl"].Value = ApiUrlConstants.STS_URL_SANDBOX;
+                    appSettings.Settings["SvWebApiUrl"].Value = ApiUrlConstants.SV_API_URL_SANDBOX;
+                    appSettings.Settings["AwardLetterWebApiUrl"].Value = ApiUrlConstants.AL_API_URL_SANDBOX;
+                    appSettings.Settings["PmWebApiUrl"].Value = ApiUrlConstants.PM_API_URL_SANDBOX;
+                    appSettings.Settings["SuWebApiUrl"].Value = ApiUrlConstants.SU_API_URL_SANDBOX;
+                }
+                else
+                {
+                    appSettings.Settings["StsUrl"].Value = ApiUrlConstants.STS_URL_PRODUCTION;
+                    appSettings.Settings["SvWebApiUrl"].Value = ApiUrlConstants.SV_API_URL_PRODUCTION;
+                    appSettings.Settings["AwardLetterWebApiUrl"].Value = ApiUrlConstants.AL_API_URL_PRODUCTION;
+                    appSettings.Settings["PmWebApiUrl"].Value = ApiUrlConstants.PM_API_URL_PRODUCTION;
+                    appSettings.Settings["SuWebApiUrl"].Value = ApiUrlConstants.SU_API_URL_PRODUCTION;
                 }
 
                 ClearOldFileDefinitions(campusLogicSection);

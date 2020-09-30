@@ -96,25 +96,22 @@ namespace CampusLogicEvents.Web
                 var config = WebConfigurationManager.OpenWebConfiguration(HostingEnvironment.ApplicationVirtualPath);
 
                 // Get the current STS and the expected STS
-                string currentSts = ConfigurationManager.AppSettings["StsUrl"];
-                string expectedSts;
+                var currentSts = ConfigurationManager.AppSettings["StsUrl"];
+                var expectedSts = string.Empty;
 
                 if (string.Equals(EnvironmentConstants.QA, environment, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    expectedSts = ApiUrlConstants.STS_URL_QA;
+                    // for QA allow any URL 
+                    expectedSts = currentSts;
                 }
                 else if (string.Equals(EnvironmentConstants.SANDBOX, environment, StringComparison.InvariantCultureIgnoreCase))
                 {
                     expectedSts = ApiUrlConstants.STS_URL_SANDBOX;
                 }
-                else if (string.Equals(EnvironmentConstants.PRODUCTION, environment, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    expectedSts = ApiUrlConstants.STS_URL_PRODUCTION;
-                }
                 else
                 {
-                    throw new Exception($"Invalid Environment {environment}");
-                }
+                    expectedSts = ApiUrlConstants.STS_URL_PRODUCTION;
+                } 
 
                 if (!string.Equals(expectedSts, currentSts, StringComparison.InvariantCultureIgnoreCase))
                 {
