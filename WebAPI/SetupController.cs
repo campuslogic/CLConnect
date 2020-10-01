@@ -509,7 +509,14 @@ namespace CampusLogicEvents.Web.WebAPI
                 appSettings.Settings["ClientValidationEnabled"].Value = "true";
                 appSettings.Settings["UnobtrusiveJavaScriptEnabled"].Value = "true";
 
-                if (appSettings.Settings["Environment"].Value == EnvironmentConstants.SANDBOX)
+                // Check if disabled
+                string value = appSettings.Settings["DisableAutoUpdate"].Value ?? "false";
+                bool.TryParse(value, out bool isDisabled);
+                if (isDisabled)
+                {
+                    // Skip it
+                }
+                else if (appSettings.Settings["Environment"].Value == EnvironmentConstants.SANDBOX)
                 {
                     appSettings.Settings["StsUrl"].Value = ApiUrlConstants.STS_URL_SANDBOX;
                     appSettings.Settings["SvWebApiUrl"].Value = ApiUrlConstants.SV_API_URL_SANDBOX;
