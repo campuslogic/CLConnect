@@ -12,7 +12,8 @@
         $scope.setDocumentSettings = setDocumentSettings;
         $scope.environmentDropDownChangeEvent = environmentDropDownChangeEvent;
         $scope.addRemovePageFromValidation = addRemovePageFromValidation;
-        
+        $scope.disableAutoUpdate = false;
+
         if (!$scope.service.configurationModel) {
             $scope.service.configurationModel = configurations;
             //temp workaround for deserialization issue              
@@ -29,6 +30,10 @@
 
         if (!$scope.validationService.pageValidations) {
             $scope.validationService.pageValidations = pageValidations;
+        }
+
+        if ($scope.service.configurationModel.appSettingsSection.disableAutoUpdate) {
+            $scope.disableAutoUpdate = $scope.service.configurationModel.appSettingsSection.disableAutoUpdate;
         }
 
         // update event properties each time the setup wizard loads 

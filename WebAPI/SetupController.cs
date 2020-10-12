@@ -510,7 +510,7 @@ namespace CampusLogicEvents.Web.WebAPI
                 appSettings.Settings["UnobtrusiveJavaScriptEnabled"].Value = "true";
 
                 // Check if disabled
-                string value = appSettings.Settings["DisableAutoUpdate"].Value ?? "false";
+                string value = ConfigurationManager.AppSettings["DisableAutoUpdate"] ?? "false";
                 bool.TryParse(value, out bool isDisabled);
                 if (isDisabled)
                 {
