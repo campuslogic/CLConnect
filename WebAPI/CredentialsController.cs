@@ -41,6 +41,7 @@ namespace CampusLogicEvents.Web.WebAPI
                     string pmApiUrl = ConfigurationManager.AppSettings["PmWebApiUrl"];
                     string alApiUrl = ConfigurationManager.AppSettings["AwardLetterWebAPIURL"];
                     string suApiUrl = ConfigurationManager.AppSettings["SuWebApiUrl"];
+                    string saApiUrl = ConfigurationManager.AppSettings["SaWebApiUrl"];
 
                     if (!svApiUrl.IsNullOrWhiteSpace())
                     {
@@ -60,6 +61,11 @@ namespace CampusLogicEvents.Web.WebAPI
                     if (!suApiUrl.IsNullOrWhiteSpace())
                     {
                         apiURLs.Add(suApiUrl);
+                    }
+
+                    if (!saApiUrl.IsNullOrWhiteSpace())
+                    {
+                        apiURLs.Add(saApiUrl);
                     }
                 }
                 // else, normal check

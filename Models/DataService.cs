@@ -202,6 +202,19 @@ namespace CampusLogicEvents.Web.Models
                             }
                         }
 
+                        // StudentAdvisor Events
+                        if (eventNotificationId >= 800 && eventNotificationId <= 899)
+                        {
+                            // Ignore conversation start events, otherwise call back to SA to get metadata
+                            if (eventNotificationId != 801)
+                            {
+                                var manager = new AdvisorManager();
+                                ConversationData conversationData = manager.GetConversationData(
+                                    eventData.PropertyValues[EventPropertyConstants.ClConversationId].Value<string>());
+                                eventData.ConversationData = conversationData;
+                            }
+                        }
+
                         // populate PropertyValues with all the values that have been gathered
                         eventData.PopulatePropertyValues();
 
