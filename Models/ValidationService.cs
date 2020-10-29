@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Configuration;
@@ -8,6 +9,7 @@ using CampusLogicEvents.Implementation;
 using CampusLogicEvents.Implementation.Configurations;
 using CampusLogicEvents.Implementation.Models;
 using log4net;
+using Microsoft.Ajax.Utilities;
 
 namespace CampusLogicEvents.Web.Models
 {
@@ -390,6 +392,12 @@ namespace CampusLogicEvents.Web.Models
         /// <param name="applicationAppSettingsSection"></param>
         public static HttpResponseMessage ValidateEnvironment(Dictionary<string, string> applicationAppSettingsSection)
         {
+            // if DisableAutoUpdate, ignore environment
+            if (string.Equals(ConfigurationManager.AppSettings["DisableAutoUpdate"], "true", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return new HttpResponseMessage(HttpStatusCode.OK);
+            }
+
             //Ensure that the environment was set appropriately
             if (applicationAppSettingsSection["environment"] != EnvironmentConstants.SANDBOX
                 && applicationAppSettingsSection["environment"] != EnvironmentConstants.PRODUCTION)
@@ -405,14 +413,45 @@ namespace CampusLogicEvents.Web.Models
         /// Validate API Credentials
         /// </summary>
         /// <param name="applicationAppSettingsSection"></param>
+        /// <param name="awardLetterUploadEnabled"></param>
         public static HttpResponseMessage ValidateApiCredentials(Dictionary<string, string> applicationAppSettingsSection, bool awardLetterUploadEnabled = false)
         {
             string stsUrl;
             List<string> apiURLs = new List<string>();
 
-            switch (applicationAppSettingsSection["environment"])
+            // if DisableAutoUpdate, use the API endpoints from web.config
+            if (string.Equals(ConfigurationManager.AppSettings["DisableAutoUpdate"], "true", StringComparison.InvariantCultureIgnoreCase))
             {
-                case EnvironmentConstants.SANDBOX:
+                stsUrl = ConfigurationManager.AppSettings["StsUrl"];
+
+                string svApiUrl = ConfigurationManager.AppSettings["SvWebApiUrl"];
+                string pmApiUrl = ConfigurationManager.AppSettings["PmWebApiUrl"];
+                string alApiUrl = ConfigurationManager.AppSettings["AwardLetterWebAPIURL"];
+                string suApiUrl = ConfigurationManager.AppSettings["SuWebApiUrl"];
+
+                if (!svApiUrl.IsNullOrWhiteSpace())
+                {
+                    apiURLs.Add(svApiUrl);
+                }
+                if (!pmApiUrl.IsNullOrWhiteSpace())
+                {
+                    apiURLs.Add(pmApiUrl);
+                }
+                if (!alApiUrl.IsNullOrWhiteSpace())
+                {
+                    apiURLs.Add(alApiUrl);
+                }
+                if (!suApiUrl.IsNullOrWhiteSpace())
+                {
+                    apiURLs.Add(suApiUrl);
+                }
+            }
+            // else, normal check
+            else
+            {
+                switch (applicationAppSettingsSection["environment"])
+                {
+                    case EnvironmentConstants.SANDBOX:
                     {
                         apiURLs.Add(ApiUrlConstants.SV_API_URL_SANDBOX);
                         apiURLs.Add(ApiUrlConstants.PM_API_URL_SANDBOX);
@@ -423,7 +462,7 @@ namespace CampusLogicEvents.Web.Models
                         stsUrl = ApiUrlConstants.STS_URL_SANDBOX;
                         break;
                     }
-                case EnvironmentConstants.PRODUCTION:
+                    case EnvironmentConstants.PRODUCTION:
                     {
                         apiURLs.Add(ApiUrlConstants.SV_API_URL_PRODUCTION);
                         apiURLs.Add(ApiUrlConstants.PM_API_URL_PRODUCTION);
@@ -434,7 +473,7 @@ namespace CampusLogicEvents.Web.Models
                         stsUrl = ApiUrlConstants.STS_URL_PRODUCTION;
                         break;
                     }
-                default:
+                    default:
                     {
                         apiURLs.Add(ApiUrlConstants.SV_API_URL_SANDBOX);
                         apiURLs.Add(ApiUrlConstants.PM_API_URL_SANDBOX);
@@ -445,6 +484,7 @@ namespace CampusLogicEvents.Web.Models
                         stsUrl = ApiUrlConstants.STS_URL_SANDBOX;
                         break;
                     }
+                }
             }
             CredentialsManager credentialsManager = new CredentialsManager();
 

@@ -213,6 +213,12 @@ namespace CampusLogicEvents.Web.WebAPI
                     appSettings.Add("SuWebApiUrl", "");
                 }
 
+                // Newer setting
+                if (!appSettings.ContainsKey("SaWebApiUrl"))
+                {
+                    appSettings.Add("SaWebApiUrl", "");
+                }
+
                 if (response.CampusLogicSection.EventNotifications.Count > 0)
                 {
                     response.CampusLogicSection.EventNotificationsEnabled = true;
@@ -510,7 +516,7 @@ namespace CampusLogicEvents.Web.WebAPI
                 appSettings.Settings["UnobtrusiveJavaScriptEnabled"].Value = "true";
 
                 // Check if disabled
-                string value = appSettings.Settings["DisableAutoUpdate"].Value ?? "false";
+                string value = ConfigurationManager.AppSettings["DisableAutoUpdate"] ?? "false";
                 bool.TryParse(value, out bool isDisabled);
                 if (isDisabled)
                 {
@@ -523,6 +529,7 @@ namespace CampusLogicEvents.Web.WebAPI
                     appSettings.Settings["AwardLetterWebApiUrl"].Value = ApiUrlConstants.AL_API_URL_SANDBOX;
                     appSettings.Settings["PmWebApiUrl"].Value = ApiUrlConstants.PM_API_URL_SANDBOX;
                     appSettings.Settings["SuWebApiUrl"].Value = ApiUrlConstants.SU_API_URL_SANDBOX;
+                    appSettings.Settings["SaWebApiUrl"].Value = ApiUrlConstants.SA_API_URL_SANDBOX;
                 }
                 else
                 {
@@ -531,6 +538,7 @@ namespace CampusLogicEvents.Web.WebAPI
                     appSettings.Settings["AwardLetterWebApiUrl"].Value = ApiUrlConstants.AL_API_URL_PRODUCTION;
                     appSettings.Settings["PmWebApiUrl"].Value = ApiUrlConstants.PM_API_URL_PRODUCTION;
                     appSettings.Settings["SuWebApiUrl"].Value = ApiUrlConstants.SU_API_URL_PRODUCTION;
+                    appSettings.Settings["SaWebApiUrl"].Value = ApiUrlConstants.SA_API_URL_PRODUCTION;
                 }
 
                 ClearOldFileDefinitions(campusLogicSection);

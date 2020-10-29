@@ -17,6 +17,11 @@
             <div class="col-md-10">
                 <select id="environmentdropdown" name="environmentdropdown" kendo-drop-down-list required class="form-control input-lg height-100" k-on-change="environmentDropDownChangeEvent(kendoEvent)" ng-model="service.configurationModel.appSettingsSection.environment">
                     <option value="">Select one..</option>
+                    
+                    <option value="{{service.configurationModel.appSettingsSection.environment}}" ng-if="disableAutoUpdate">
+                        {{service.configurationModel.appSettingsSection.environment}}
+                    </option>
+                    
                     <option value="sandbox">Sandbox</option>
                     <option value="production">Production</option>
                 </select>

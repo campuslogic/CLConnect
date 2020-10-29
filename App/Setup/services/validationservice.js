@@ -720,8 +720,12 @@
         }
 
         function manuallyTestEnvironment() {
-            return (setupservice.configurationModel.appSettingsSection.environment === 'sandbox'
-                || setupservice.configurationModel.appSettingsSection.environment === 'production');
+            if (setupservice.configurationModel.appSettingsSection.disableAutoUpdate) {
+                return true;
+            } else {
+                return (setupservice.configurationModel.appSettingsSection.environment === 'sandbox'
+                    || setupservice.configurationModel.appSettingsSection.environment === 'production');
+            }
         }
 
         function testSmtpSettings(form) {
