@@ -717,11 +717,27 @@ namespace CampusLogicEvents.Web.Models
                     switch (apiEndpoint.Method)
                     {
                         case WebRequestMethods.Http.Get:
-                            var array = (from key in eventParams.AllKeys
-                                         from value in eventParams.GetValues(key)
-                                         select $"{HttpUtility.UrlEncode(key)}={HttpUtility.UrlEncode(value)}").ToArray();
+                            var list = new List<string>();
+
+                            foreach (string key in eventParams.AllKeys)
+                            {
+                                string[] eventParamsKeyValues = eventParams.GetValues(key);
+
+                                if (eventParamsKeyValues == null)
+                                {
+                                    throw new NullReferenceException($"EventParams for key:{key} returned null");
+                                }
+
+                                foreach (string value in eventParamsKeyValues)
+                                {
+                                    list.Add($"{HttpUtility.UrlEncode(key)}={HttpUtility.UrlEncode(value)}");
+                                }
+                            }
+
+                            string[] array = list.ToArray();
                             endpoint += "?" + string.Join("&", array);
                             response = httpClient.GetAsync(endpoint).Result;
+
                             break;
                         case WebRequestMethods.Http.Post:
                             response = httpClient.PostAsync(endpoint, GetHttpContent(eventParams, apiEndpoint.MimeType)).Result;
