@@ -37,7 +37,7 @@ namespace CampusLogicEvents.Web.Models
                     if (records.Any())
                     {
                         // Lock these records from being processed again
-                        dbContext.Database.ExecuteSqlCommand($"UPDATE[dbo].[BatchProcessRecord] SET[ProcessGuid] = '{processGuid}' FROM [dbo].[BatchProcessRecord] WHERE[Id] IN(SELECT [Id] from[dbo].[BatchProcessRecord] WHERE [Type] = '{type}' AND [Name] = '{name}' AND [ProcessGuid] IS NULL)");
+                        dbContext.Database.ExecuteSqlCommand($"UPDATE [dbo].[BatchProcessRecord] SET [ProcessGuid] = '{processGuid}' FROM [dbo].[BatchProcessRecord] WHERE [Id] IN (SELECT [Id] FROM [dbo].[BatchProcessRecord] WHERE [Type] = '{type}' AND [Name] = '{name}' AND [ProcessGuid] IS NULL)");
 
                         // Ensure there are locked records with this process guid
                         if (dbContext.BatchProcessRecords.Any(b => b.ProcessGuid != null && b.ProcessGuid == processGuid))
@@ -61,12 +61,12 @@ namespace CampusLogicEvents.Web.Models
                                     if (record.RetryCount == null)
                                     {
                                         record.RetryCount = 1;
-                                        dbContext.Database.ExecuteSqlCommand($"UPDATE[dbo].[BatchProcessRecord] SET [RetryCount] = 1, [RetryUpdatedDate] = '{now}' FROM [dbo].[BatchProcessRecord] WHERE[Id] = {record.Id}");
+                                        dbContext.Database.ExecuteSqlCommand($"UPDATE [dbo].[BatchProcessRecord] SET [RetryCount] = 1, [RetryUpdatedDate] = '{now}' FROM [dbo].[BatchProcessRecord] WHERE [Id] = {record.Id}");
                                     }
                                     else if (retryTimeHasPassed || record.RetryCount == RETRY_MAX)
                                     {
                                         record.RetryCount = record.RetryCount + 1;
-                                        dbContext.Database.ExecuteSqlCommand($"UPDATE[dbo].[BatchProcessRecord] SET [RetryCount] = [RetryCount] + 1, [RetryUpdatedDate] = '{now}'  FROM [dbo].[BatchProcessRecord] WHERE[Id] = {record.Id}");
+                                        dbContext.Database.ExecuteSqlCommand($"UPDATE [dbo].[BatchProcessRecord] SET [RetryCount] = [RetryCount] + 1, [RetryUpdatedDate] = '{now}'  FROM [dbo].[BatchProcessRecord] WHERE [Id] = {record.Id}");
                                     }
 
                                     if (eventData.PropertyValues[EventPropertyConstants.AlRecordId].IsNullOrEmpty())
@@ -98,7 +98,7 @@ namespace CampusLogicEvents.Web.Models
                                         var recordIdList = string.Join(",", recordIds.Keys);
                                         var message = new EventNotificationData(JObject.Parse(dbContext.Database.SqlQuery<string>($"SELECT [Message] from [dbo].[BatchProcessRecord] WHERE [ProcessGuid] = '{processGuid}' and [Id] IN ({recordIdList})").First()));
 
-                                        var response = await manager.GetBatchAwardLetterPdfFile(recordIds.Values.ToList(), name, message);
+                                        var response = await manager.GetBatchAwardLetterPdfFile(processGuid, recordIds.Values.ToList(), name, message);
                                         //If the response was successful remove those records from the db so
                                         //we do not continue to process them if the file fails
                                         if (response.IsSuccessStatusCode)
@@ -115,7 +115,7 @@ namespace CampusLogicEvents.Web.Models
                                     var recordIdList = string.Join(",", recordIds.Keys);
                                     var message = new EventNotificationData(JObject.Parse(dbContext.Database.SqlQuery<string>($"SELECT [Message] from [dbo].[BatchProcessRecord] WHERE [ProcessGuid] = '{processGuid}' and [Id] IN ({recordIdList})").First()));
 
-                                    var response = await manager.GetBatchAwardLetterPdfFile(recordIds.Values.ToList(), name, message);
+                                    var response = await manager.GetBatchAwardLetterPdfFile(processGuid, recordIds.Values.ToList(), name, message);
                                     if (response.IsSuccessStatusCode)
                                     {
                                         dbContext.Database.ExecuteSqlCommand($"DELETE FROM [dbo].[BatchProcessRecord] WHERE [ProcessGuid] = '{processGuid}' and [Id] IN ({recordIdList})");
