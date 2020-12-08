@@ -699,12 +699,29 @@ namespace CampusLogicEvents.Web.Models
                     }
 
                     // use the eventdata and its values to link up to the endpoint's parameters
-                    var parameterMappings = JArray.Parse(apiEndpoint.ParameterMappings);
-                    NameValueCollection eventParams = new NameValueCollection();
+                    JArray parameterMappings;
+                    try
+                    {
+                        parameterMappings = JArray.Parse(apiEndpoint.ParameterMappings);
+                    }
+                    catch (Exception)
+                    {
+                        logger.Error("apiEndpoint.ParameterMappings could not be parsed");
+
+                        throw;
+                    }
+
+                    if (!parameterMappings.Any())
+                    {
+                        throw new Exception("No parameter mappings were found");
+                    }
+
+                    var eventParams = new NameValueCollection();
 
                     // foreach mapping, get event property, find its corresponding eventdata, get that eventdata's value, attach it to the parameter in mapping
-                    foreach (JObject mapping in parameterMappings)
+                    foreach (JToken jToken in parameterMappings)
                     {
+                        var mapping = (JObject) jToken;
                         var eventValue = eventData.PropertyValues[mapping["eventData"].Value<string>()].Value<string>();
                         eventParams.Add(mapping["parameter"].Value<string>(), eventValue);
                     }
