@@ -22,7 +22,7 @@ namespace CampusLogicEvents.Web.Models
         private static readonly CampusLogicSection campusLogicConfigSection = (CampusLogicSection)ConfigurationManager.GetSection(ConfigConstants.CampusLogicConfigurationSectionName);
 
         [AutomaticRetry(Attempts = 0)]
-        public static async Task RunBatchProcess(string type, string name, int size)
+        public static void RunBatchProcess(string type, string name, int size)
         {
 
             logger.Info("enter batch processing");
@@ -98,7 +98,7 @@ namespace CampusLogicEvents.Web.Models
                                         var recordIdList = string.Join(",", recordIds.Keys);
                                         var message = new EventNotificationData(JObject.Parse(dbContext.Database.SqlQuery<string>($"SELECT [Message] from [dbo].[BatchProcessRecord] WHERE [ProcessGuid] = '{processGuid}' and [Id] IN ({recordIdList})").First()));
 
-                                        var response = await manager.GetBatchAwardLetterPdfFile(processGuid, recordIds.Values.ToList(), name, message);
+                                        var response = Task.Run(async ()=> await manager.GetBatchAwardLetterPdfFile(processGuid, recordIds.Values.ToList(), name, message)).ConfigureAwait(false).GetAwaiter().GetResult();
                                         //If the response was successful remove those records from the db so
                                         //we do not continue to process them if the file fails
                                         if (response.IsSuccessStatusCode)
@@ -115,7 +115,7 @@ namespace CampusLogicEvents.Web.Models
                                     var recordIdList = string.Join(",", recordIds.Keys);
                                     var message = new EventNotificationData(JObject.Parse(dbContext.Database.SqlQuery<string>($"SELECT [Message] from [dbo].[BatchProcessRecord] WHERE [ProcessGuid] = '{processGuid}' and [Id] IN ({recordIdList})").First()));
 
-                                    var response = await manager.GetBatchAwardLetterPdfFile(processGuid, recordIds.Values.ToList(), name, message);
+                                    var response = Task.Run(async () => await manager.GetBatchAwardLetterPdfFile(processGuid, recordIds.Values.ToList(), name, message)).ConfigureAwait(false).GetAwaiter().GetResult();
                                     if (response.IsSuccessStatusCode)
                                     {
                                         dbContext.Database.ExecuteSqlCommand($"DELETE FROM [dbo].[BatchProcessRecord] WHERE [ProcessGuid] = '{processGuid}' and [Id] IN ({recordIdList})");
