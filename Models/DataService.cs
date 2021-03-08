@@ -721,8 +721,15 @@ namespace CampusLogicEvents.Web.Models
                     // foreach mapping, get event property, find its corresponding eventdata, get that eventdata's value, attach it to the parameter in mapping
                     foreach (JToken jToken in parameterMappings)
                     {
-                        var mapping = (JObject) jToken;
-                        var eventValue = eventData.PropertyValues[mapping["eventData"].Value<string>()].Value<string>();
+                        var mapping = (JObject)jToken;
+
+                        // This retrieves the "DisplayName" value of the EventProperty
+                        var mappingDisplayName = mapping["eventData"].Value<string>();
+
+                        // SV-3872 Convert to the "Name" value of the EventProperty
+                        // In cases of JS formula, this will apply that value instead
+                        var eventValue = eventData.GetValueByDisplayName(mappingDisplayName);
+
                         eventParams.Add(mapping["parameter"].Value<string>(), eventValue);
                     }
 
