@@ -44,9 +44,11 @@
                 <label class="control-label">Basic Property Value</label>
             </div>
             <div class="col-md-8">
-                <select style="width: 100%;" id="inputPropertyFieldValue" required kendo-drop-down-list name="inputPropertyFieldValue" ng-model="modelCopy.propertyFieldValue">
+                <!--Changing to a type ahead so that we can adjust the value simply if need be, by pre-pending or appending values-->
+                <input placeholder="'Enter Event Property Value...'" style="width: 100%;" id="inputPropertyFieldValue" required kendo-auto-complete ng-model="modelCopy.propertyFieldValue" k-data-source="dropdown.eventPropertyValueAvailableProperties"/>
+                @*<select style="width: 100%;" id="inputPropertyFieldValue" required kendo-auto-complete name="inputPropertyFieldValue" ng-model="modelCopy.propertyFieldValue">
                     <option ng-repeat="value in dropdown.eventPropertyValueAvailableProperties" value="{{value}}">{{value}}</option>
-                </select>
+                </select>*@
             </div>
         </div>
         <div class="row padding-bottom-ten" ng-if="selectedValueType === 'Constant Value'">

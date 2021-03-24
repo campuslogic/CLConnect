@@ -1,6 +1,5 @@
 ﻿using CampusLogicEvents.Implementation;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -10,7 +9,7 @@ using CampusLogicEvents.Implementation.Models;
 
 namespace CampusLogicEvents.Web.Models
 {
-    public static class NotificationService
+	public static class NotificationService
     {
         private static readonly CampusLogicSection campusLogicSection = (CampusLogicSection)ConfigurationManager.GetSection(ConfigConstants.CampusLogicConfigurationSectionName);
         private static readonly NotificationManager notificationManager = new NotificationManager();

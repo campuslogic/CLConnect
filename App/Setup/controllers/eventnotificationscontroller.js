@@ -21,6 +21,8 @@
         vm.eventNotificationTypes = resolveEventNotificationTypes;
         vm.IsCommandEnabled = IsCommandEnabled;
         vm.IsFileStoreEnabled = IsFileStoreEnabled;
+        vm.IsBatchProcessingEnabled = IsBatchProcessingEnabled;
+        vm.IsApiIntegrationsEnabled = IsApiIntegrationsEnabled;
         vm.onConnectionStringTypeChange = onConnectionStringTypeChange;
         vm.removeEventNotification = removeEventNotification;
         vm.testConnectionString = testConnectionString;
@@ -28,10 +30,22 @@
         vm.validationService = validationservice;
         vm.eventNotificationsValid = validationservice.pageValidations.eventNotificationsValid;
         vm.duplicateEvent = false;
+        vm.invalidBatchName = false;
+        vm.invalidApiEndpointName = false;
         vm.checkForDuplicateEvent = checkForDuplicateEvent;
+        vm.checkForInvalidBatchName = checkForInvalidBatchName;
+        vm.hasInvalidApiEndpointName = hasInvalidApiEndpointName;
         vm.handleMethodChange = handleMethodChange;
 
         onLoad();
+
+        function checkForInvalidBatchName() {
+            vm.invalidBatchName = validationservice.checkForInvalidBatchName();
+        }
+
+        function hasInvalidApiEndpointName() {
+            vm.invalidApiEndpointName = validationservice.hasInvalidApiEndpointName();
+        }
 
         function checkForDuplicateEvent() {
             vm.duplicateEvent = validationservice.checkForDuplicateEvent();
@@ -48,6 +62,8 @@
                 dbCommandFieldValue: ''
             });
             checkForDuplicateEvent();
+            checkForInvalidBatchName();
+            hasInvalidApiEndpointName();
         }
 
         function IsCommandEnabled(index) {
@@ -68,15 +84,42 @@
             return eventNotificationType.isFileStoreTypeRequired;
         }
 
+        function IsBatchProcessingEnabled(index) {
+            var eventNotificationTypeId = vm.eventNotifications[index].handleMethod;
+            if (!eventNotificationTypeId)
+                return false;
+
+            var eventNotificationType = $.grep(vm.eventNotificationTypes, function (e) { return e.eventNotificationTypeId == eventNotificationTypeId; })[0];
+            return eventNotificationType.isBatchProcessingRequired;
+        }
+
+        function IsApiIntegrationsEnabled(index) {
+            var eventNotificationTypeId = vm.eventNotifications[index].handleMethod;
+            if (!eventNotificationTypeId)
+                return false;
+
+            var eventNotificationType = $.grep(vm.eventNotificationTypes, function (e) { return e.eventNotificationTypeId == eventNotificationTypeId; })[0];
+
+            return eventNotificationType.isApiIntegrationRequired;
+        }
+
         function handleMethodChange(e) {
-            if (e.handleMethod === 'DocumentRetrieval' || e.handleMethod === 'FileStore' || e.handleMethod === 'FileStoreAndDocumentRetrieval') {
+            if (e.handleMethod === 'DocumentRetrieval' || e.handleMethod === 'FileStore' || e.handleMethod === 'FileStoreAndDocumentRetrieval' || e.handleMethod === 'Print' || e.handleMethod === 'BatchProcessingAwardLetterPrint' || e.handleMethod === 'ApiIntegration' || e.handleMethod === 'PowerFAIDS' ) {
                 e.dbCommandFieldValue = '';
             }
-            if (e.handleMethod !== 'FileStore' || e.handleMethod !== 'FileStoreAndDocumentRetrieval') {
+            if (e.handleMethod !== 'FileStore' && e.handleMethod !== 'FileStoreAndDocumentRetrieval') {
                 e.fileStoreType = '';
             }
             if (e.handleMethod === 'FileStore' || e.handleMethod === 'FileStoreAndDocumentRetrieval') {
                 e.fileStoreType = 'Shared';
+            }
+            if (e.handleMethod !== 'BatchProcessingAwardLetterPrint') {
+                e.batchName = '';
+                vm.invalidBatchName = false;
+            }
+            if (e.handleMethod !== 'ApiIntegration') {
+                e.apiEndpointName = '';
+                vm.invalidApiEndpointName = false;
             }
         }
 
@@ -95,6 +138,10 @@
                         return (eventNotification.handleMethod !== 'DocumentRetrieval'
                                && eventNotification.handleMethod !== 'FileStore'
                                && eventNotification.handleMethod !== 'FileStoreAndDocumentRetrieval'
+                               && eventNotification.handleMethod !== 'AwardLetterPrint'
+                               && eventNotification.handleMethod !== 'BatchProcessingAwardLetterPrint'
+                               && eventNotification.handleMethod !== 'ApiIntegration'
+                               && eventNotification.handleMethod !== 'PowerFAIDS'
                         );
                     }))
                     {
@@ -118,6 +165,8 @@
 
         function onLoad() {
             checkForDuplicateEvent();
+            checkForInvalidBatchName();
+            hasInvalidApiEndpointName();
             if (vm.clientDatabaseConnection.connectionString.indexOf("DSN") >= 0) {
                 vm.connectionStringType = 'd';
                 var keyValuePairs = vm.clientDatabaseConnection.connectionString.split(';');
@@ -150,6 +199,8 @@
         function removeEventNotification(index) {
             vm.eventNotifications.splice(index, 1);
             checkForDuplicateEvent();
+            checkForInvalidBatchName();
+            hasInvalidApiEndpointName();
         }
 
         function testConnectionString(form) {

@@ -1,12 +1,11 @@
-﻿using System;
-using CampusLogicEvents.Web.Models;
+﻿using CampusLogicEvents.Web.Models;
 using Hangfire.Common;
 using Hangfire.States;
 using Hangfire.Storage;
 
 namespace CampusLogicEvents.Web.Areas.HelpPage.ModelDescriptions
 {
-    public class SendEmailFailureAttribute : JobFilterAttribute, IApplyStateFilter
+	public class SendEmailFailureAttribute : JobFilterAttribute, IApplyStateFilter
     {
 
         /// <summary>

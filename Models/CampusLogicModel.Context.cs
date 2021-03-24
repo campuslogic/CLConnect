@@ -40,5 +40,8 @@ namespace CampusLogicEvents.Web.Models
         public DbSet<Log> Logs { get; set; }
         public DbSet<NotificationLog> NotificationLogs { get; set; }
         public DbSet<EventNotification> EventNotifications { get; set; }
+        public DbSet<BatchProcessRecord> BatchProcessRecords { get; set; }
+        public DbSet<PowerFaidsRecord> PowerFaidsRecords { get; set; }
+        public DbSet<EventProperty> EventProperty { get; set; }
     }
 }

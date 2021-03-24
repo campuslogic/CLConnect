@@ -5,7 +5,9 @@ using CampusLogicEvents.Implementation;
 using System;
 using System.Net;
 using System.Collections.Generic;
+using System.Configuration;
 using CampusLogicEvents.Implementation.Configurations;
+using Microsoft.Ajax.Utilities;
 
 namespace CampusLogicEvents.Web.WebAPI
 {
@@ -13,12 +15,6 @@ namespace CampusLogicEvents.Web.WebAPI
     {
 
         private static readonly ILog logger = LogManager.GetLogger("AdoNetAppender");
-
-        #region constants 
-        private const string SANDBOX = "sandbox";
-        private const string PRODUCTION = "production";
-        
-        #endregion constants
 
         public CredentialsController()
         {
@@ -29,44 +25,52 @@ namespace CampusLogicEvents.Web.WebAPI
         {
             try
             {
-                string stsURL = string.Empty;
-                List<string> apiURLs = new List<string>();
+                string stsUrl;
+                string apiURL;
 
-                switch (environment)
+                // if DisableAutoUpdate, use the API endpoints from web.config
+                if (string.Equals(
+                    ConfigurationManager.AppSettings["DisableAutoUpdate"],
+                    "true",
+                    StringComparison.InvariantCultureIgnoreCase
+                ))
                 {
-                    case SANDBOX:
+                    stsUrl = ConfigurationManager.AppSettings["StsUrl"];
+                    string pmApiUrl = ConfigurationManager.AppSettings["PmWebApiUrl"];
+
+                    if (pmApiUrl.IsNullOrWhiteSpace())
+                    {
+                        throw new Exception("App setting 'PmWebApiUrl' not found");
+                    }
+                    apiURL = pmApiUrl;
+                }
+                // else, normal check
+                else
+                {
+                    switch (environment)
+                    {
+                        case EnvironmentConstants.SANDBOX:
                         {
-                            apiURLs.Add(ApiUrlConstants.SV_APIURL_SANDBOX);
-                            if (awardLetterUploadEnabled)
-                            {
-                                apiURLs.Add(ApiUrlConstants.AL_APIURL_SANDBOX);
-                            }
-                            stsURL = ApiUrlConstants.STSURL_SANDBOX;
+                            apiURL = ApiUrlConstants.PM_API_URL_SANDBOX;
+                            stsUrl = ApiUrlConstants.STS_URL_SANDBOX;
                             break;
                         }
-                    case PRODUCTION:
+                        case EnvironmentConstants.PRODUCTION:
                         {
-                            apiURLs.Add(ApiUrlConstants.SV_APIURL_PRODUCTION);
-                            if (awardLetterUploadEnabled)
-                            {
-                                apiURLs.Add(ApiUrlConstants.AL_APIURL_PRODUCTION);
-                            }
-                            stsURL = ApiUrlConstants.STSURL_PRODUCTION;
+                            apiURL = ApiUrlConstants.PM_API_URL_PRODUCTION;
+                            stsUrl = ApiUrlConstants.STS_URL_PRODUCTION;
                             break;
                         }
-                    default:
+                        default:
                         {
-                            apiURLs.Add(ApiUrlConstants.SV_APIURL_SANDBOX);
-                            if (awardLetterUploadEnabled)
-                            {
-                                apiURLs.Add(ApiUrlConstants.AL_APIURL_SANDBOX);
-                            }
-                            stsURL = ApiUrlConstants.STSURL_SANDBOX;
+                            apiURL = ApiUrlConstants.PM_API_URL_SANDBOX;
+                            stsUrl = ApiUrlConstants.STS_URL_SANDBOX;
                             break;
                         }
+                    }
                 }
                 CredentialsManager credentialsManager = new CredentialsManager();
-                HttpResponseMessage response = credentialsManager.GetAuthorizationToken(username, password, apiURLs, stsURL);
+                HttpResponseMessage response = credentialsManager.GetAuthorizationToken(username, password, apiURL, stsUrl);
 
                 return response;
             }

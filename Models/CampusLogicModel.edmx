@@ -5,6 +5,18 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="CampusLogicEvents.Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="BatchProcessRecord">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Type" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="25" Nullable="false" />
+          <Property Name="Message" Type="varchar(max)" Nullable="false" />
+          <Property Name="ProcessGuid" Type="uniqueidentifier" />
+          <Property Name="RetryCount" Type="int" />
+          <Property Name="RetryUpdatedDate" Type="datetime" />
+        </EntityType>
         <EntityType Name="EventNotification">
           <Key>
             <PropertyRef Name="Id" />
@@ -14,6 +26,15 @@
           <Property Name="Message" Type="varchar(max)" Nullable="false" />
           <Property Name="CreatedDateTime" Type="datetime" Nullable="false" />
           <Property Name="ProcessGuid" Type="uniqueidentifier" />
+        </EntityType>
+        <EntityType Name="EventProperty">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="DisplayName" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="DisplayFormula" Type="nvarchar" MaxLength="2000" Nullable="false" />
         </EntityType>
         <EntityType Name="Log">
           <Key>
@@ -38,6 +59,14 @@
           <Property Name="Subject" Type="nvarchar" MaxLength="250" Nullable="false" />
           <Property Name="Body" Type="nvarchar(max)" Nullable="false" />
           <Property Name="FailedSending" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PowerFaidsRecord">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Json" Type="varchar(max)" Nullable="false" />
+          <Property Name="ProcessGuid" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="ReceivedEvent">
           <Key>
@@ -179,9 +208,12 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="CampusLogicEventsModelStoreContainer">
+          <EntitySet Name="BatchProcessRecord" EntityType="Self.BatchProcessRecord" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EventNotification" EntityType="Self.EventNotification" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EventProperty" EntityType="Self.EventProperty" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Log" EntityType="Self.Log" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NotificationLog" EntityType="Self.NotificationLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PowerFaidsRecord" EntityType="Self.PowerFaidsRecord" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ReceivedEvent" EntityType="Self.ReceivedEvent" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AggregatedCounter" EntityType="Self.AggregatedCounter" Schema="HangFire" store:Type="Tables" />
           <EntitySet Name="Counter" EntityType="Self.Counter" Schema="HangFire" store:Type="Tables" />
@@ -231,6 +263,9 @@
           <EntitySet Name="Logs" EntityType="CampusLogicEvents.Model.Log" />
           <EntitySet Name="NotificationLogs" EntityType="CampusLogicEvents.Model.NotificationLog" />
           <EntitySet Name="EventNotifications" EntityType="CampusLogicEvents.Model.EventNotification" />
+          <EntitySet Name="BatchProcessRecords" EntityType="CampusLogicEvents.Model.BatchProcessRecord" />
+          <EntitySet Name="PowerFaidsRecords" EntityType="CampusLogicEvents.Model.PowerFaidsRecord" />
+          <EntitySet Name="EventProperty" EntityType="CampusLogicEvents.Model.EventProperty" />
         </EntityContainer>
         <EntityType Name="AggregatedCounter">
           <Key>
@@ -409,6 +444,35 @@
           <Property Name="CreatedDateTime" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ProcessGuid" Type="Guid" />
         </EntityType>
+        <EntityType Name="BatchProcessRecord">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Type" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="Message" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ProcessGuid" Type="Guid" />
+          <Property Name="RetryCount" Type="Int32" />
+          <Property Name="RetryUpdatedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="PowerFaidsRecord">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Json" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ProcessGuid" Type="Guid" />
+        </EntityType>
+        <EntityType Name="EventProperty">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="DisplayName" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="DisplayFormula" Type="String" Nullable="false" MaxLength="2000" FixedLength="false" Unicode="true" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -575,6 +639,38 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="BatchProcessRecords">
+            <EntityTypeMapping TypeName="CampusLogicEvents.Model.BatchProcessRecord">
+              <MappingFragment StoreEntitySet="BatchProcessRecord">
+                <ScalarProperty Name="RetryUpdatedDate" ColumnName="RetryUpdatedDate" />
+                <ScalarProperty Name="RetryCount" ColumnName="RetryCount" />
+                <ScalarProperty Name="ProcessGuid" ColumnName="ProcessGuid" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PowerFaidsRecords">
+            <EntityTypeMapping TypeName="CampusLogicEvents.Model.PowerFaidsRecord">
+              <MappingFragment StoreEntitySet="PowerFaidsRecord">
+                <ScalarProperty Name="ProcessGuid" ColumnName="ProcessGuid" />
+                <ScalarProperty Name="Json" ColumnName="Json" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EventProperty">
+            <EntityTypeMapping TypeName="CampusLogicEvents.Model.EventProperty">
+              <MappingFragment StoreEntitySet="EventProperty">
+                <ScalarProperty Name="DisplayFormula" ColumnName="DisplayFormula" />
+                <ScalarProperty Name="DisplayName" ColumnName="DisplayName" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
@@ -589,8 +685,8 @@
     <Options>
       <DesignerInfoPropertySet>
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
-        <DesignerProperty Name="EnablePluralization" Value="True" />
-        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="False" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
         <DesignerProperty Name="UseLegacyProvider" Value="True" />
       </DesignerInfoPropertySet>

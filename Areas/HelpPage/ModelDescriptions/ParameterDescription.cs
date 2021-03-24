@@ -1,9 +1,8 @@
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace CampusLogicEvents.Web.Areas.HelpPage.ModelDescriptions
 {
-    public class ParameterDescription
+	public class ParameterDescription
     {
         public ParameterDescription()
         {

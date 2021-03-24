@@ -1,9 +1,8 @@
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace CampusLogicEvents.Web.Areas.HelpPage.ModelDescriptions
 {
-    public class EnumTypeModelDescription : ModelDescription
+	public class EnumTypeModelDescription : ModelDescription
     {
         public EnumTypeModelDescription()
         {

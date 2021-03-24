@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Configuration;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using CampusLogicEvents.Implementation;
-using CampusLogicEvents.Implementation.Configurations;
 using CampusLogicEvents.Implementation.Models;
 using Hangfire;
 using log4net;
 
 namespace CampusLogicEvents.Web.Models
 {
-    public static class UploadService
+	public static class UploadService
     {
         private static readonly ILog logger = LogManager.GetLogger("AdoNetAppender");
 
@@ -38,17 +37,33 @@ namespace CampusLogicEvents.Web.Models
                 //Check permissions on upload path first
                 if (!manager.ValidateDirectory(uploadSettings.UploadFilePath))
                 {
-                    NotificationService.ErrorNotification($"Automated {uploadSettings.UploadType} Upload Process", $"The upload file path {uploadSettings.UploadFilePath} does not authroize read and write updates");
-                    throw new Exception($"The upload file path {uploadSettings.UploadFilePath} does not authroize read and write updates");
+                    NotificationService.ErrorNotification($"Automated {uploadSettings.UploadType} Upload Process", $"The upload file path {uploadSettings.UploadFilePath} does not authorize read and write updates");
+                    throw new Exception($"The upload file path {uploadSettings.UploadFilePath} does not authorize read and write updates");
                 }
 
-                //Get list of files to upload
-                var fileNamesList = Directory.GetFiles(uploadSettings.UploadFilePath);
+                //Get list of files to upload, ignore base folder for data files, we only accept sub folder items
+                var filesToUpload = new List<string>();
+                if(uploadSettings.UploadType != UploadSettings.DataFile)
+                {
+                    filesToUpload.AddRange(Directory.GetFiles(uploadSettings.UploadFilePath));
+                }
+                
+
+                if((uploadSettings.UploadType == UploadSettings.AwardLetter || uploadSettings.UploadType == UploadSettings.DataFile) && uploadSettings.CheckSubDirectories == true) {
+                    //Get files from first level sub-folders as well except the archive folder - these will be files that are not the default FileType
+                    foreach(var dir in Directory.GetDirectories(uploadSettings.UploadFilePath)) {
+                        if(dir.Equals(uploadSettings.ArchiveFilePath, StringComparison.CurrentCultureIgnoreCase) == true) {
+                            continue;
+                        }
+
+                        filesToUpload.AddRange(Directory.GetFiles(dir));
+                    }
+                }
 
                 //If no files exist end process
-                if (fileNamesList.Any())
+                if (filesToUpload.Any())
                 {
-                    foreach (var fileName in fileNamesList)
+                    foreach (var fileName in filesToUpload)
                     {
                         //Upload each File
                         var result = manager.UploadFile(fileName, uploadSettings, false).Result;

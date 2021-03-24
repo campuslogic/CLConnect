@@ -25,6 +25,8 @@
                     <option value="Shared">Shared</option>
                     <option value="Individual">Individual</option>
                 </select>
+                <input class="form-control" placeholder="Batch Name" ng-show="vm.IsBatchProcessingEnabled($index)" ng-disabled="!vm.IsBatchProcessingEnabled($index)" ng-model="event.batchName" ng-change="vm.checkForInvalidBatchName()" />
+                <input class="form-control" placeholder="Endpoint Name" ng-show="vm.IsApiIntegrationsEnabled($index)" ng-disabled="!vm.IsApiIntegrationsEnabled($index)" ng-model="event.apiEndpointName" ng-change="vm.hasInvalidApiEndpointName()" />
             </div>
             <div class="col-md-5">
                 <input id="eventcommand{{$index}}" name="eventcommand{{$index}}" class="form-control" placeholder="Database Command" ng-model="event.dbCommandFieldValue" ng-disabled="!vm.IsCommandEnabled($index)" ng-required="vm.IsCommandEnabled($index)" />
@@ -39,7 +41,15 @@
         </div>
     </div>
     <div class="padding-top-ten">
-        <span class="alert alert-danger" role="alert" ng-show="vm.duplicateEvent">Events can only be responded to once, please delete duplicate event.</span>
+        <div ng-if="vm.duplicateEvent">
+            <span class="alert alert-danger" role="alert">Events can only be responded to once, please delete duplicate event.</span>
+        </div>
+        <div style="padding-top:36px;" ng-if="vm.invalidBatchName">
+            <span class="alert alert-danger" role="alert">Batch names cannot be blank or used more than once, please correct the batch process.</span>
+        </div>
+        <div style="padding-top:36px;" ng-if="vm.invalidApiEndpointName">
+            <span class="alert alert-danger" role="alert">API Endpoint names cannot be blank.</span>
+        </div>
     </div>
     <div class="padding-top-twenty">
         <label>Database Connection</label>

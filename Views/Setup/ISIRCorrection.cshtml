@@ -76,8 +76,8 @@
                 <cl-folder-picker isrequired="true" formvalid="validationService.pageValidations.isirCorrectionsValid" uploadpath="vm.service.configurationModel.campusLogicSection.isirCorrectionsSettings.tdClientExecutablePath"></cl-folder-picker>
             </div>
             <div class="col-md-6">
-                <label>TDClient secfile Folder Path:<a popover-template="'tdClientSecfileFolderPath.html'"><i class="fa fa-question-circle"></i></a></label>
-                <cl-folder-picker isrequired="true" formvalid="validationService.pageValidations.isirCorrectionsValid" uploadpath="vm.service.configurationModel.campusLogicSection.isirCorrectionsSettings.tdClientSecfileFolderPath"></cl-folder-picker>
+                <label>TDClient secfile Folder/Relative Path:<a popover-template="'tdClientSecfileFolderPath.html'"><i class="fa fa-question-circle"></i></a></label>
+                <input ng-required="true" name="secFilePath" type="text" ng-model="vm.service.configurationModel.campusLogicSection.isirCorrectionsSettings.tdClientSecfileFolderPath" class="form-control">
             </div>
         </div>
         <div class="row padding-bottom-ten">
@@ -113,7 +113,9 @@
 
 <script type="text/ng-template" id="tdClientSecfileFolderPath.html">
     <div>
-        The location of the TdClient secfile file.
+        The location of the TdClient secfile file. This can be a relative or absolute path.
+        PLEASE NOTE: No spacing is allowed in this path. There is also no validation on this path for 
+        permissions because it can also be relative.
     </div>
 </script>
 

@@ -39,7 +39,7 @@ namespace CampusLogicEvents.Web.Models
 
                 if (campusLogicConfigSection.ISIRCorrectionsSettings.TdClientEnabled.HasValue && campusLogicConfigSection.ISIRCorrectionsSettings.TdClientEnabled.Value == true)
                 {
-                    var tdClientResult = manager.SendTdClientISIRCorrections().Result;
+                    var tdClientResult = manager.SendTdClientISIRCorrections();
 
                     //Log all(if any) of the error emails sent during the Automated ISIR Batch process
                     NotificationService.LogNotifications(tdClientResult.NotificationDataList);
@@ -48,7 +48,7 @@ namespace CampusLogicEvents.Web.Models
             catch (Exception ex)
             {
                 NotificationService.ErrorNotification("Automated ISIR Corrections Process", ex);
-                logger.ErrorFormat("ISIRService ISIRUpload Error: {0}", ex);
+                logger.ErrorFormat("ISIRService ISIR Correction Error: {0}", ex);
             }
 
         }

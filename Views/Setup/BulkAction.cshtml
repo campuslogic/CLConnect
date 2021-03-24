@@ -1,0 +1,57 @@
+﻿@{
+    Layout = "~/Views/Shared/_LeftMenuLayout.cshtml";
+}
+
+<h2>
+    <b>Bulk Action</b>
+</h2>
+<p>
+    This step will allow you to select the configurations for the Bulk Action process.
+</p>
+<hr />
+<form class="padding-top-ten" novalidate="" name="vm.form">
+    <div class="row">
+        <div class="col-md-7 form-group">
+            <label class="col-md-3 control-label no-gutter"><span class="form-required" aria-hidden="true">* </span>Process Schedule</label>
+            <div class="col-md-7 no-gutter">
+                <select required
+                        kendo-drop-down-list
+                        class="form-control input-lg height-100"
+                        ng-model="vm.settings.frequency"
+                        style="margin-left: 14px; width: calc(100% - 14px)">
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="minutes">Minutely</option>
+                    <option value="hourly">Hourly</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-7 form-group">
+            <label class="col-md-3 control-label no-gutter"><span class="form-required" aria-hidden="true">* </span>File Pickup Location</label>
+            <cl-folder-picker isrequired="true" formvalid="vm.validationService.pageValidations.BulkActionUploadPath" uploadpath="vm.settings.bulkActionUploadPath"></cl-folder-picker>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-7 form-group">
+            <label class="col-md-3 control-label no-gutter"><span class="form-required" aria-hidden="true">* </span>File Drop-off Location</label>
+            <cl-folder-picker isrequired="true" formvalid="vm.validationService.pageValidations.BulkActionArchivePath" uploadpath="vm.settings.bulkActionArchivePath"></cl-folder-picker>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-7 form-group">
+            <div class="col-md-3">
+                <label class="col-md-3no-gutter"> <span class="form-required" aria-hidden="true">* </span>Notification Email</label>
+            </div>
+            <div class="col-md-7">
+                <input type="text" class="form-control" id="notificationEmail" name="notificationEmail" ng-model="vm.settings.notificationEmail" required />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <label class="col-md-5 control-label">
+            <input type="checkbox" ng-model="vm.settings.useSSN" /> File Uses Student Social Security Numbers
+        </label>
+    </div>
+</form>

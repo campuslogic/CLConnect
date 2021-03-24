@@ -96,17 +96,15 @@
                 </div>
                 <div ng-if="service.configurationModel.smtpSection.network.defaultCredentials==false">
                     <div class="form-group">
-                        <label class="col-md-4 control-label"><span class="form-required" aria-hidden="true">*</span> User Name</label>
+                        <label class="col-md-4 control-label"><span class="form-required" aria-hidden="true"></span> User Name</label>
                         <div class="col-md-8">
-                            <input required name="userName" type="text" ng-model="service.configurationModel.smtpSection.network.userName" class="form-control">
-                            <span class="field-validation-error" ng-show="(smtpForm.userName.$dirty && smtpForm.userName.$error.required) || (!validationService.pageValidations.smtpValid && (service.configurationModel.smtpSection.network.userName === '' || !service.configurationModel.smtpSection.network.userName))">Required</span>
+                            <input name="userName" type="text" ng-model="service.configurationModel.smtpSection.network.userName" class="form-control">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-md-4 control-label"><span class="form-required" aria-hidden="true">*</span> Password</label>
+                        <label class="col-md-4 control-label"><span class="form-required" aria-hidden="true"></span> Password</label>
                         <div class="col-md-8">
-                            <input required name="password" type="password" ng-model="service.configurationModel.smtpSection.network.password" class="form-control">
-                            <span class="field-validation-error" ng-show="(smtpForm.password.$dirty && smtpForm.password.$error.required) || (!validationService.pageValidations.smtpValid && (service.configurationModel.smtpSection.network.password === '' || !service.configurationModel.smtpSection.network.password))">Required</span>
+                            <input name="password" type="password" ng-model="service.configurationModel.smtpSection.network.password" class="form-control">
                         </div>
                     </div>
                 </div>
