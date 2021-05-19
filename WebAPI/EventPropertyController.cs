@@ -4,11 +4,13 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using CampusLogicEvents.Implementation;
+using CampusLogicEvents.Web.Filters;
 using CampusLogicEvents.Web.Models;
 using log4net;
 
 namespace CampusLogicEvents.Web.WebAPI
 {
+    [LocalRequestOnly]
     public class EventPropertyController : ApiController
     {
         private static readonly ILog logger = LogManager.GetLogger("AdoNetAppender");

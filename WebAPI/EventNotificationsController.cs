@@ -1,4 +1,5 @@
 ﻿using CampusLogicEvents.Implementation;
+using CampusLogicEvents.Web.Filters;
 using CampusLogicEvents.Web.Models;
 using System.Collections.Generic;
 using System.Net;
@@ -7,6 +8,7 @@ using System.Web.Http;
 
 namespace CampusLogicEvents.Web.WebAPI
 {
+    [LocalRequestOnly]
     public class EventNotificationsController : ApiController
     {
         private readonly IEnumerable<EventNotificationType> eventNotificationTypes = new EventNotificationType[] {
