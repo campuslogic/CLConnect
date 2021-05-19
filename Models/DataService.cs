@@ -6,7 +6,6 @@ using System.Linq;
 using CampusLogicEvents.Implementation;
 using CampusLogicEvents.Implementation.Configurations;
 using CampusLogicEvents.Implementation.Models;
-using CampusLogicEvents.Web.Areas.HelpPage.ModelDescriptions;
 using Hangfire;
 using log4net;
 using Newtonsoft.Json;
@@ -21,6 +20,7 @@ using System.Net.Http.Headers;
 using System.IO;
 using System.Xml.Linq;
 using CampusLogicEvents.Implementation.Extensions;
+using CampusLogicEvents.Web.Filters;
 
 namespace CampusLogicEvents.Web.Models
 {

@@ -3,9 +3,9 @@ using Hangfire.Common;
 using Hangfire.States;
 using Hangfire.Storage;
 
-namespace CampusLogicEvents.Web.Areas.HelpPage.ModelDescriptions
+namespace CampusLogicEvents.Web.Filters
 {
-	public class SendEmailFailureAttribute : JobFilterAttribute, IApplyStateFilter
+    public class SendEmailFailureAttribute : JobFilterAttribute, IApplyStateFilter
     {
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace CampusLogicEvents.Web.Areas.HelpPage.ModelDescriptions
 
         public void OnStateUnapplied(ApplyStateContext context, IWriteOnlyTransaction transaction)
         {
-            
+
         }
     }
 }
