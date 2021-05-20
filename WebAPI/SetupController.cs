@@ -1,5 +1,6 @@
 ﻿using CampusLogicEvents.Implementation.Configurations;
 using CampusLogicEvents.Implementation.Models;
+using CampusLogicEvents.Web.Filters;
 using CampusLogicEvents.Web.Models;
 using log4net;
 using Newtonsoft.Json.Linq;
@@ -18,6 +19,7 @@ using System.Web.Http;
 
 namespace CampusLogicEvents.Web.WebAPI
 {
+    [LocalRequestOnly]
     public class SetupController : ApiController
     {
         private static readonly ILog logger = LogManager.GetLogger("AdoNetAppender");

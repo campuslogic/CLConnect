@@ -8,9 +8,11 @@ using System.Collections.Generic;
 using System.Configuration;
 using CampusLogicEvents.Implementation.Configurations;
 using Microsoft.Ajax.Utilities;
+using CampusLogicEvents.Web.Filters;
 
 namespace CampusLogicEvents.Web.WebAPI
 {
+    [LocalRequestOnly]
     public class CredentialsController : ApiController
     {
 

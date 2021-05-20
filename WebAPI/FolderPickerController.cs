@@ -7,9 +7,11 @@ using System.Net.Http;
 using System.Web;
 using System.Web.Http;
 using CampusLogicEvents.Implementation;
+using CampusLogicEvents.Web.Filters;
 
 namespace CampusLogicEvents.Web.WebAPI
 {
+    [LocalRequestOnly]
     public class FolderPickerController : ApiController
     {
         private static readonly ILog logger = LogManager.GetLogger("AdoNetAppender");
